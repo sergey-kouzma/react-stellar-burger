@@ -1,0 +1,37 @@
+.header {
+    box-sizing: border-box;
+    background-color: #1C1C21;
+    margin: 0 auto;  
+    max-width: 1280px;
+    padding: 4px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .menu {
+    box-sizing: border-box;
+    display: flex;
+    column-gap: 8px;
+    align-items: center;
+    justify-content: left;
+  }
+
+  .iconWithText {
+    text-decoration: none;
+    box-sizing: border-box;
+    column-gap: 9px;
+    display: flex;
+    color: white;
+    padding: 4px 5px;
+  }
+
+
+  
+  .logo {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+   

@@ -1,15 +1,46 @@
 import styles from "./app.module.css";
-import { data } from "../../utils/data";
+import { useState, useEffect } from "react";
+import AppHeader from "../AppHeader/AppHeader";
+import BurgerIngredients from "../BurgerIngredients/BurgerIngridients";
+
+const API_URL = "https://norma.nomoreparties.space/api";
 
 function App() {
+  const [productsData, setProductsData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  
+
+  useEffect(() => {
+    const getProductsData = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`${API_URL}/ingredients`);
+        const adata = await res.json();
+        setProductsData(adata.data);
+        setError(false);
+      } catch {
+        setError(true);
+        setProductsData(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getProductsData();
+  }, []);
+
   return (
     <div className={styles.app}>
-      <pre style={{
-      	margin: "auto",
-      	fontSize: "1.5rem"
-      }}>
-      	Измените src/components/app/app.jsx и сохраните для обновления.
-      </pre>
+      <AppHeader />
+      {loading ? (
+        <p>...Загрузка</p>
+      ) : error ? (
+        <p className={`${styles.error}`}>Ошибка загрузки</p>
+      ) : (
+        <BurgerIngredients ingredients={productsData} />
+        
+      )}
+     
     </div>
   );
 }
