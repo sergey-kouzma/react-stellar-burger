@@ -5,23 +5,17 @@ import React, { useMemo, useRef, useState } from "react";
 import IngredientsList from "./IngredientsList/IngredientsList";
 import Modal from '../Modal/Modal';
 import IngredientDetails from './IngredientDetails/IngredientDetails';
+import { useModal } from '../../hooks/useModal';
 
 const BurgerIngredients = ({ ingredients }) => {
-
-  const [isModalOpened, setModalOpened] = React.useState(false);
+  const { isModalOpened, openModal, closeModal } = useModal();
   const [openedIngredient, setOpenedIngredient] = React.useState();
  
   const handleOpenIngredient = (ingredient) => {
-    console.log('Будем открывать модалку');
-    setModalOpened(true);
+    openModal(true);
     setOpenedIngredient(ingredient);
   }
   console.log(typeof handleOpenIngredient);
-
-
-  const handleCloseModal = () => {
-    setModalOpened(false);
-  }
 
   const buns = useMemo(() => {
     return ingredients.filter(item => item.type === 'bun');
@@ -70,7 +64,7 @@ const BurgerIngredients = ({ ingredients }) => {
         <IngredientsList handleOpenIngredient={handleOpenIngredient} category={'Начинки'} items={mains} ref={tabRefs.mains} />
       </div>
       {isModalOpened && (
-        <Modal onModalClose={handleCloseModal} title="Детали ингредиента">
+        <Modal onModalClose={closeModal} title="Детали ингредиента">
           <IngredientDetails data={openedIngredient} />
         </Modal>
       )}

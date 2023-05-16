@@ -5,9 +5,10 @@ import { ConstructorElement, DragIcon, CurrencyIcon, Button } from "@ya.praktiku
 
 import Modal from "../Modal/Modal";
 import OrderDetails from "./OrderDetails/OrderDetails";
+import { useModal } from "../../hooks/useModal";
 
 const BurgerConstructor = ({ ingredients }) => {
-    const [isModalOpened, setModalOpened] = React.useState(false);
+    const { isModalOpened, openModal, closeModal } = useModal();
 
     const bun = useMemo(() => {
         return ingredients.find(item => item.type === 'bun');
@@ -18,14 +19,6 @@ const BurgerConstructor = ({ ingredients }) => {
     }, [ingredients]);
 
     const [totalPrice, setTotalPrice] = React.useState(610);
-
-    const handleOpenOrder = (el) => {
-        setModalOpened(true);
-    };
-
-    const handleCloseModal = () => {
-        setModalOpened(false);
-    }
 
     const bunElementSettings = {
         isLocked: true,
@@ -69,12 +62,12 @@ const BurgerConstructor = ({ ingredients }) => {
                     <p className="text text_type_digits-medium mr-3">{totalPrice}</p>
                     <CurrencyIcon type="primary" />
                 </div>
-                <Button htmlType="button" type="primary" size="medium" onClick={handleOpenOrder}>
+                <Button htmlType="button" type="primary" size="medium" onClick={openModal}>
                     Оформить заказ
                 </Button>
             </div>
             {isModalOpened && (
-                <Modal onModalClose={handleCloseModal}>
+                <Modal onModalClose={closeModal}>
                     <OrderDetails orderId="034536" />
                 </Modal>
             )}

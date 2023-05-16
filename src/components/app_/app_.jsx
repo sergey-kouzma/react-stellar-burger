@@ -17,9 +17,15 @@ function App() {
       setLoading(true);
       try {
         const res = await fetch(`${API_URL}/ingredients`);
-        const adata = await res.json();
-        setProductsData(adata.data);
-        setError(false);
+        if (!res.ok) {
+          Promise.reject(`Ошибка ${res.status}`);
+        }
+        else {
+          const adata = await res.json();
+          setProductsData(adata.data);
+          setError(false);
+        }
+        
       } catch {
         setError(true);
         setProductsData(null);
@@ -33,7 +39,7 @@ function App() {
   return (
     <div className={styles.app}>
       <AppHeader />
-      <div className={styles.page}>
+      <main className={styles.page}>
         {loading ? (
           <p>...Загрузка</p>
         ) : error ? (
@@ -44,7 +50,7 @@ function App() {
             <BurgerConstructor ingredients={productsData} />
           </>
         )}
-      </div>
+      </main>
     </div>
   );
 }
