@@ -6,7 +6,7 @@ import styles from "./OrderDetails.module.css";
 
 const OrderDetails = ({orderId}) => {
   return (
-    <div className={styles.modal_content}>
+    <div className={styles.orderDetails}>
       <div>
         <p className="text text_type_digits-large">{orderId}</p>
       </div>
