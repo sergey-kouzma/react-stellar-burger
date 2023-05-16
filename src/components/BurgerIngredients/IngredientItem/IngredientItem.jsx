@@ -1,16 +1,17 @@
+
 import { CurrencyIcon, Counter } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from './IngredientItem.module.css';
 import {ingredientPropType} from '../../../utils/prop-types';
+import Modal from "../../Modal/Modal";
+import IngredientModal from "../IngredientDetails/IngredientDetails";
+import React from "react";
 
-function IngredientItem({item}) {
+function IngredientItem({item, handleOpenIngredient}) {
   const counter = 0;
- 
-  const handleOpenModal = () => {
-    console.log('Будем открывать модалку');
-  }
+
 
   return(
-    <li className={styles.item} type='button' onClick={handleOpenModal}>
+    <li className={styles.item} type='button' onClick={() => handleOpenIngredient(item)}>
       {
         counter > 0 
         ? (<Counter count={counter} size={counter < 100 ? "default" : "small"} extraClass="m-1"/>) 
@@ -23,7 +24,6 @@ function IngredientItem({item}) {
       </div>
       <p className={`${styles.description} text text_type_main-default`}>{item.name}</p>
     </li>
-
   )
 }
 

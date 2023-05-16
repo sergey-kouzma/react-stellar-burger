@@ -5,6 +5,7 @@
     flex-direction: column;
     align-items: center;
     row-gap: 8px;
+    cursor:pointer;
   }
  
   .img {

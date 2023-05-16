@@ -1,8 +1,7 @@
 .section {
     box-sizing: border-box;
     width: 50%;
-    padding-top: 10px;
-    padding-left: 5px;
+    margin-top: 40px;
   }
   
   .main {
@@ -10,6 +9,11 @@
     max-height: calc(100vh - 230px);
  
     padding: 0;
+  }
+
+  .menu {
+    display:flex;
+    height: 56px;
   }
   
   .header {

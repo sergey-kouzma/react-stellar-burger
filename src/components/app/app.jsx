@@ -2,6 +2,7 @@ import styles from "./app.module.css";
 import { useState, useEffect } from "react";
 import AppHeader from "../AppHeader/AppHeader";
 import BurgerIngredients from "../BurgerIngredients/BurgerIngridients";
+import BurgerConstructor from "../BurgerConstructor/BurgerConstructor";
 
 const API_URL = "https://norma.nomoreparties.space/api";
 
@@ -32,15 +33,18 @@ function App() {
   return (
     <div className={styles.app}>
       <AppHeader />
-      {loading ? (
-        <p>...Загрузка</p>
-      ) : error ? (
-        <p className={`${styles.error}`}>Ошибка загрузки</p>
-      ) : (
-        <BurgerIngredients ingredients={productsData} />
-        
-      )}
-     
+      <div className={styles.page}>
+        {loading ? (
+          <p>...Загрузка</p>
+        ) : error ? (
+          <p className={`${styles.error}`}>Ошибка загрузки</p>
+        ) : (
+          <>
+            <BurgerIngredients ingredients={productsData} />
+            <BurgerConstructor ingredients={productsData} />
+          </>
+        )}
+      </div>
     </div>
   );
 }
