@@ -1,0 +1,11 @@
+.list {
+    display: grid;
+    grid-row-gap: 30px;
+    grid-template-columns: 50% 50%;
+    margin: 24px 0px 0px;
+  }
+
+  .header {
+    margin-bottom: 6px;
+    margin-top: 40px;
+  }

@@ -1,0 +1,19 @@
+.ingredient {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+  }
+  
+  .composition {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .compositionItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
