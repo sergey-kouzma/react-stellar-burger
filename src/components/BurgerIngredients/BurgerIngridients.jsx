@@ -1,46 +1,69 @@
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import {ingredientsListPropType} from '../../utils/prop-types';
 import styles from './BurgerIngredients.module.css';
-import React, { useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import IngredientsList from "./IngredientsList/IngredientsList";
 import Modal from '../Modal/Modal';
 import IngredientDetails from './IngredientDetails/IngredientDetails';
 import { useModal } from '../../hooks/useModal';
+import { RESET_CURRENT_INGREDIENT, SET_CURRENT_INGREDIENT } from '../../services/actions/currentIngredient';
+import { SET_INGREDIENTS_TAB } from '../../services/actions/tabs';
 
-const BurgerIngredients = ({ ingredients }) => {
+
+const BurgerIngredients = () => {
+  const dispatch = useDispatch();
+  const { ingredients } = useSelector(store => store.ingredients);
   const { isModalOpened, openModal, closeModal } = useModal();
-  const [openedIngredient, setOpenedIngredient] = React.useState();
+
+  const { currentIngredient } = useSelector(store => store);
+  const { tabs } = useSelector(store => store.tabs);
+
  
   const handleOpenIngredient = (ingredient) => {
     openModal(true);
-    setOpenedIngredient(ingredient);
+    dispatch({ type: SET_CURRENT_INGREDIENT, data: ingredient });
   }
-  console.log(typeof handleOpenIngredient);
 
-  const buns = useMemo(() => {
-    return ingredients.filter(item => item.type === 'bun');
-  }, [ingredients]);
+  const handleCloseIngredient = () => {
+    dispatch({ type: RESET_CURRENT_INGREDIENT });
+    closeModal();
+  }
+
+  const onTabClick = (tabCategory) => {
+    dispatch({type: SET_INGREDIENTS_TAB, id: tabCategory, move: true});
+  }
+
+  const handleScroll = (e) => {
+    let bestShift;
+    let bestId;
+    const containerTop = e.target.getBoundingClientRect().top;
+    tabs.forEach(tab => {
+      const tabTop = tab.refToList.current.getBoundingClientRect().top;
+      const tabShift = tabTop > containerTop ? tabTop - containerTop : containerTop - tabTop;
+
+      if (!bestId || tabShift < bestShift) {
+        bestShift = tabShift;
+        bestId = tab.id;
+      }
+    });
   
-  const sauces = useMemo(() => {
-    return ingredients.filter(item => item.type === 'sauce');
-  }, [ingredients]);
-  
-  const mains = useMemo(() => {
-    return ingredients.filter(item => item.type === 'main');
-  }, [ingredients]) 
-
-  const tabRefs = {
-    buns: useRef(null),
-    sauces: useRef(null),
-    mains: useRef(null)
+    tabs.forEach(tab => {
+      if (tab.active) {
+        if (tab.category !== bestId) {
+          dispatch({type: SET_INGREDIENTS_TAB, id: bestId});
+        }
+      }
+    });
   }
-  const [currentType, setCurrentType] = useState('buns');
 
-  const onTabClick = (tab) => {
-    setCurrentType(tab);
-    tabRefs[tab].current.scrollIntoView({ behavior: "smooth" })
-
-  }
+  const ingredientsByTabs = useMemo(() => {
+    return tabs.map((tab) => {
+      return {
+        tab: tab,
+        ingredients: ingredients.filter(item => item.type === tab.id)
+      }
+    });
+  }, [ingredients, tabs]) 
   
   return(
     <section className={styles.section}>
@@ -48,32 +71,30 @@ const BurgerIngredients = ({ ingredients }) => {
         Соберите бургер
       </h1>
       <div  className={styles.menu}>
-        <Tab value="buns" active={currentType === "buns"} onClick={onTabClick}>
-          Булки
-        </Tab>
-        <Tab value="sauces" active={currentType === "sauces"} onClick={onTabClick}>
-          Соусы
-        </Tab>
-        <Tab value="mains" active={currentType === "mains"} onClick={onTabClick}>
-          Начинки
-        </Tab>
+        {tabs.map((tab) => ( 
+          <Tab value={tab.id} key={tab.id} active={tab.active} onClick={onTabClick}>
+            {tab.category}
+          </Tab>
+        ))}
+        
       </div>
-      <div className={`${styles.main} custom-scroll`}>
-        <IngredientsList handleOpenIngredient={handleOpenIngredient} category={'Булки'} items={buns} ref={tabRefs.buns}/>
-        <IngredientsList handleOpenIngredient={handleOpenIngredient} category={'Соусы'} items={sauces} ref={tabRefs.sauces} />
-        <IngredientsList handleOpenIngredient={handleOpenIngredient} category={'Начинки'} items={mains} ref={tabRefs.mains} />
+      <div className={`${styles.main} custom-scroll`} onScroll={handleScroll}>
+        {ingredientsByTabs.map((ingredientOfTab) => ( 
+          <IngredientsList 
+            handleOpenIngredient={handleOpenIngredient} 
+            category={ingredientOfTab.tab.category} 
+            items={ingredientOfTab.ingredients} 
+            key={ingredientOfTab.tab.id}
+          />
+        ))}
       </div>
       {isModalOpened && (
-        <Modal onModalClose={closeModal} title="Детали ингредиента">
-          <IngredientDetails data={openedIngredient} />
+        <Modal onModalClose={handleCloseIngredient} title="Детали ингредиента">
+          <IngredientDetails data={currentIngredient} />
         </Modal>
       )}
     </section>
   )
 }
-
-BurgerIngredients.propTypes = {
-  ingredients: ingredientsListPropType.isRequired,
-};
 
 export default BurgerIngredients;

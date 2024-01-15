@@ -2,6 +2,7 @@ import { ingredientPropType } from "../../../utils/prop-types.js";
 import styles from "./IngredientDetails.module.css";
 
 const IngredientDetails = (props) => {
+  console.log(props);
   return (
     <div className={styles.ingredient}>
       <img

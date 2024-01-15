@@ -2,16 +2,28 @@
 import { CurrencyIcon, Counter } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from './IngredientItem.module.css';
 import {ingredientPropType} from '../../../utils/prop-types';
-import Modal from "../../Modal/Modal";
-import IngredientModal from "../IngredientDetails/IngredientDetails";
-import React from "react";
+import { useDrag } from 'react-dnd';
+import { useSelector } from "react-redux";
 
 function IngredientItem({item, handleOpenIngredient}) {
-  const counter = 0;
+  const counter = useSelector(
+    store => store.burgerConstructor.constructorIngredients
+      .filter(elem => elem._id === item._id)
+      .reduce((accumulator, elem) => {
+        return accumulator + 1 * (elem.type === 'bun' ? 2 : 1)
+      }, 0)
+  );
+  const [ , dragRef ] = useDrag({
+    type: item.type,
+    item: item,
+    collect: monitor => ({
+        isDrag: monitor.isDragging()
+    })
+  });
 
 
   return(
-    <li className={styles.item} type='button' onClick={() => handleOpenIngredient(item)}>
+    <li className={styles.item} type='button' onClick={() => handleOpenIngredient(item)} ref={dragRef}>
       {
         counter > 0 
         ? (<Counter count={counter} size={counter < 100 ? "default" : "small"} extraClass="m-1"/>) 
