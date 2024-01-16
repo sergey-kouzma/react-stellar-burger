@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import {    
     ADD_INGREDIENT,
     DELETE_INGREDIENT,
@@ -48,14 +49,15 @@ function array_move(arr, from, to) {
 const burgerConstructorReducer =  (state = initialBurgerConstrluctorState, action) => {
     switch (action.type) {
         case ADD_INGREDIENT: {
+            const uuid = uuidv4();
             if (action.item.type === 'bun') {
                 const bunIndex = state.constructorIngredients.findIndex(item => item.type === 'bun');
                 let newConstructorIngredients;
                 if (bunIndex === -1)  {
-                    newConstructorIngredients = [{...action.item, orderNum: 0 }, ...state.constructorIngredients]
+                    newConstructorIngredients = [{...action.item, uuid: uuid }, ...state.constructorIngredients]
                 }
                 else {
-                    newConstructorIngredients = [{...action.item, orderNum: 0 }, ...state.constructorIngredients.slice(1)]
+                    newConstructorIngredients = [{...action.item, uuid: uuid }, ...state.constructorIngredients.slice(1)]
                 }
                 return {
                     ...state,
@@ -63,10 +65,7 @@ const burgerConstructorReducer =  (state = initialBurgerConstrluctorState, actio
                 }
             }
 
-            const orderNum = 1 + state.constructorIngredients.reduce(function(accumulator, item, index, array) {
-                return accumulator < item.orderNum ? item.orderNum : accumulator
-              }, 0);
-            const newIngredients = [...state.constructorIngredients, {...action.item, orderNum: orderNum } ];
+            const newIngredients = [...state.constructorIngredients, {...action.item, uuid: uuid } ];
             const elementsBefore = action.elementsBefore;
             const bunPosition = state.constructorIngredients.findIndex(item => item.type === 'bun');
             const newPosition = bunPosition === -1 ? elementsBefore : elementsBefore + 1;
@@ -78,15 +77,15 @@ const burgerConstructorReducer =  (state = initialBurgerConstrluctorState, actio
         case DELETE_INGREDIENT: {
             return {
                 ...state,
-                constructorIngredients: state.constructorIngredients.filter(ingredient => ingredient.orderNum !== action.orderNum)
+                constructorIngredients: state.constructorIngredients.filter(ingredient => ingredient.uuid !== action.uuid)
             }
         }
         case MOVE_INGREDIENT: {  
             
             const elementsBefore = action.elementsBefore;
-            const prevOrderNum = action.item.orderNum;
+            const prevUuid = action.item.uuid;
             const bunPosition = state.constructorIngredients.findIndex(item => item.type === 'bun');
-            const elementOldPosition = state.constructorIngredients.findIndex(item => item.orderNum === prevOrderNum);
+            const elementOldPosition = state.constructorIngredients.findIndex(item => item.uuid === prevUuid);
             const newPosition = bunPosition === -1 ? elementsBefore : elementsBefore + 1;
             
             return {

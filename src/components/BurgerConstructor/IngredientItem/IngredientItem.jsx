@@ -11,10 +11,10 @@ const IngredientItem = ({ingredient}) => {
 
 
     const handleDelete = (e) => {
-        const ingredientOrderNum = Number(e.target.closest(`.${styles.ingredient}`).dataset.orderNum);
+        const ingredientUuid = Number(e.target.closest(`.${styles.ingredient}`).dataset.uuid);
         dispatch({
             type: DELETE_INGREDIENT,
-            orderNum: ingredientOrderNum
+            uuid: ingredientUuid
         })
     }
     
@@ -33,10 +33,10 @@ const IngredientItem = ({ingredient}) => {
 
     return (
         <div 
-            data-order-num={ingredient.orderNum} 
+            data-order-num={ingredient.uuid} 
             className={styles.ingredient} 
             ref={ref}
-            data-id={ingredient.orderNum}
+            data-id={ingredient.uuid}
         >
             <DragIcon type="primary" />
             <ConstructorElement

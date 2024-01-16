@@ -19,15 +19,20 @@ import IngredientItem from "./IngredientItem/IngredientItem";
 const BurgerConstructor = () => {
     const dispatch = useDispatch();
     const ref = useRef(null);
+    const orderSelector = store => store.order;
+    const constructorIngredientsSelector = store => store.burgerConstructor;
+    const totalPriceSelector = store => store.burgerConstructor.constructorIngredients.reduce((accumulator, elem) => {
+        return accumulator + elem.price * (elem.type === 'bun' ? 2 : 1)
+    }, 0);
+    
     const {
         loading, 
         error,
         orderData
-      } = useSelector(store => store.order);
-    const { constructorIngredients } = useSelector(store => store.burgerConstructor);
-    const totalPrice = useSelector(store => store.burgerConstructor.constructorIngredients.reduce((accumulator, elem) => {
-        return accumulator + elem.price * (elem.type === 'bun' ? 2 : 1)
-    }, 0));
+      } = useSelector(orderSelector);
+
+    const { constructorIngredients } = useSelector(constructorIngredientsSelector);
+    const totalPrice = useSelector(totalPriceSelector);
     let elementsBefore = 0;
 
     const { isModalOpened, openModal, closeModal } = useModal();
@@ -47,7 +52,7 @@ const BurgerConstructor = () => {
     };
 
     const onDropIngredient = (item) => {
-        if (item.orderNum === undefined) {
+        if (item.uuid === undefined) {
             dispatch({
                 type: ADD_INGREDIENT,
                 item: item,
@@ -125,7 +130,7 @@ const BurgerConstructor = () => {
                 <div className={`${styles.ingredients} custom-scroll`}  ref={ref}>
                     {innerIngredients &&
                         innerIngredients.map((ingredient, index) => (
-                            <IngredientItem key={ingredient.orderNum} ingredient = {ingredient} />
+                            <IngredientItem key={ingredient.uuid} ingredient = {ingredient} />
                         ))}
                 </div>
                 <div className={`${styles.ingredient} ${styles.bun}`}>

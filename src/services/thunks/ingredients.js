@@ -5,6 +5,7 @@ import {
 } from '../actions/ingredients';
 
 import {BASE_URL} from '../../utils/api';
+import {getFetchResultData} from '../../utils/getFetchResultData';
 export const INGREDIENTS_URL =   BASE_URL + '/ingredients';
 
 export const getIngredients = (ingredientsURL) => {
@@ -15,11 +16,11 @@ export const getIngredients = (ingredientsURL) => {
             });
             
             const res = await fetch(`${INGREDIENTS_URL}`);
-            const json = await res.json();
+            const data = await getFetchResultData(res);
             
             dispatch({ 
                 type: GET_INGREDIENTS_SUCCESS, 
-                ingredients: json.data
+                ingredients: data.data
             });
         }
         catch(err){

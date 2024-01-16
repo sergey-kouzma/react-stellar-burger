@@ -5,13 +5,17 @@ import {
 } from '../actions/order';
 
 import {BASE_URL} from '../../utils/api';
+import {getFetchResultData} from '../../utils/getFetchResultData';
 export const ORDER_URL = BASE_URL + '/orders';
 
 export const sendOrder = (ingredients) => {
     return async (dispatch) => {       
-        
+        const ingredientsToRequest = ingredients;
+        const bun = ingredientsToRequest.find(item => item.type === 'bun');
+        ingredientsToRequest.push(bun);
+
         const requestBody = {
-            ingredients: ingredients.map(item => item._id)
+            ingredients: ingredientsToRequest.map(item => item._id)
         };
         
         try {
@@ -24,12 +28,7 @@ export const sendOrder = (ingredients) => {
                 body: JSON.stringify(requestBody)
             });
     
-            if (!res.ok) {
-                throw new Error('');
-            }
-
-            const data = await res.json();
-            console.log(data);
+            const data = await getFetchResultData(res);
 
             dispatch({ 
                 type: SEND_ORDER_SUCCESS,
