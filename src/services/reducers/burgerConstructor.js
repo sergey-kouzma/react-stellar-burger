@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import {    
     ADD_INGREDIENT,
     DELETE_INGREDIENT,
@@ -49,7 +48,7 @@ function array_move(arr, from, to) {
 const burgerConstructorReducer =  (state = initialBurgerConstrluctorState, action) => {
     switch (action.type) {
         case ADD_INGREDIENT: {
-            const uuid = uuidv4();
+            const uuid = action.uuid;
             if (action.item.type === 'bun') {
                 const bunIndex = state.constructorIngredients.findIndex(item => item.type === 'bun');
                 let newConstructorIngredients;

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { useMemo, useRef } from "react";
 import styles from "./BurgerConstructor.module.css";
 import {  } from '../../utils/prop-types';
@@ -56,7 +57,8 @@ const BurgerConstructor = () => {
             dispatch({
                 type: ADD_INGREDIENT,
                 item: item,
-                elementsBefore: elementsBefore
+                elementsBefore: elementsBefore,
+                uuid: uuidv4()
             })
         }   
         else {
