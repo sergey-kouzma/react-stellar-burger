@@ -1,40 +1,26 @@
 import styles from "./App.module.css";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import AppHeader from "../AppHeader/AppHeader";
 import BurgerIngredients from "../BurgerIngredients/BurgerIngridients";
 import BurgerConstructor from "../BurgerConstructor/BurgerConstructor";
 
-const API_URL = "https://norma.nomoreparties.space/api";
+import { getIngredients } from '../../services/thunks/ingredients';
 
 function App() {
-  const [productsData, setProductsData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const dispatch = useDispatch();
+  const {
+    loading, 
+    error
+  } = useSelector(store => store.ingredients);
+
   
 
   useEffect(() => {
-    const getProductsData = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`${API_URL}/ingredients`);
-        if (!res.ok) {
-          Promise.reject(`Ошибка ${res.status}`);
-        }
-        else {
-          const adata = await res.json();
-          setProductsData(adata.data);
-          setError(false);
-        }
-        
-      } catch {
-        setError(true);
-        setProductsData(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getProductsData();
-  }, []);
+    dispatch(getIngredients());
+  }, [dispatch]);
 
   return (
     <div className={styles.app}>
@@ -45,10 +31,10 @@ function App() {
         ) : error ? (
           <p className={`${styles.error}`}>Ошибка загрузки</p>
         ) : (
-          <>
-            <BurgerIngredients ingredients={productsData} />
-            <BurgerConstructor ingredients={productsData} />
-          </>
+          <DndProvider backend={HTML5Backend}>
+            <BurgerIngredients />
+            <BurgerConstructor />
+          </DndProvider>
         )}
       </main>
     </div>

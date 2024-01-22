@@ -1,4 +1,3 @@
-import React from "react";
 import PropTypes from "prop-types";
 import done from "../../../images/done.svg";
 
@@ -21,7 +20,7 @@ const OrderDetails = ({orderId}) => {
 };
 
 OrderDetails.propTypes = {
-  orderId: PropTypes.string.isRequired,
+  orderId: PropTypes.number.isRequired,
 };
 
 export default OrderDetails;
